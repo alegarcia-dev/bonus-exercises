@@ -829,3 +829,16 @@ LEFT JOIN (
 	GROUP BY order_id
 ) AS topping_prices USING (order_id)
 GROUP BY order_id;
+
+# 3
+
+# INCOMPLETE
+# 3a
+# What is the average price of pizzas that have no cheese?
+
+SELECT
+	pizza_id
+FROM pizzas
+JOIN pizza_modifiers USING (pizza_id)
+JOIN modifiers USING (modifier_id)
+WHERE modifier_id = 3;
