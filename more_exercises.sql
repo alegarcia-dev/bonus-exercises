@@ -837,8 +837,34 @@ GROUP BY order_id;
 # What is the average price of pizzas that have no cheese?
 
 SELECT
-	pizza_id
-FROM pizzas
-JOIN pizza_modifiers USING (pizza_id)
-JOIN modifiers USING (modifier_id)
-WHERE modifier_id = 3;
+	ROUND(AVG(total_price), 2) AS Average_Price_Of_No_Cheese_Pizzas
+FROM (
+	SELECT
+		pizza_id,
+		ROUND(
+			size_price + 
+			IF(total_topping_price IS NULL, 0, total_topping_price),
+			2
+		) AS total_price
+	FROM pizzas
+	JOIN pizza_modifiers USING (pizza_id)
+	JOIN modifiers USING (modifier_id)
+	JOIN sizes USING (size_id)
+	JOIN (
+		SELECT
+			pizza_id,
+			SUM(
+				CASE topping_amount
+					WHEN 'light' THEN topping_price * 0.5
+					WHEN 'extra' THEN topping_price * 1.5
+					WHEN 'double' THEN topping_price * 2
+					ELSE topping_price
+				END
+			) AS total_topping_price
+		FROM pizzas
+		LEFT JOIN pizza_toppings USING (pizza_id)
+		LEFT JOIN toppings USING (topping_id)
+		GROUP BY pizza_id
+	) AS topping_prices USING (pizza_id)
+	WHERE modifier_id = 3
+) AS no_cheese_prices;
