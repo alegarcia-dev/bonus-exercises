@@ -835,7 +835,7 @@ GROUP BY order_id;
 # INCOMPLETE
 # 3a
 # What is the average price of pizzas that have no cheese?
-
+# $14.23
 SELECT
 	ROUND(AVG(total_price), 2) AS Average_Price_Of_No_Cheese_Pizzas
 FROM (
@@ -868,3 +868,17 @@ FROM (
 	) AS topping_prices USING (pizza_id)
 	WHERE modifier_id = 3
 ) AS no_cheese_prices;
+
+# 3b
+# What is the most common size for pizzas that have extra cheese?
+# medium
+SELECT
+	size_name
+FROM pizzas
+JOIN pizza_modifiers USING (pizza_id)
+JOIN modifiers USING (modifier_id)
+JOIN sizes USING (size_id)
+WHERE modifier_id = 1
+GROUP BY size_name
+ORDER BY COUNT(*) DESC
+LIMIT 1;
