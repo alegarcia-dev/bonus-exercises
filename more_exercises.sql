@@ -832,7 +832,6 @@ GROUP BY order_id;
 
 # 3
 
-# INCOMPLETE
 # 3a
 # What is the average price of pizzas that have no cheese?
 # $14.23
@@ -880,5 +879,20 @@ JOIN modifiers USING (modifier_id)
 JOIN sizes USING (size_id)
 WHERE modifier_id = 1
 GROUP BY size_name
+ORDER BY COUNT(*) DESC
+LIMIT 1;
+
+# 3c
+# What is the most common topping for pizzas that are well done?
+# bacon
+SELECT
+	topping_name
+FROM pizzas
+JOIN pizza_modifiers USING (pizza_id)
+JOIN modifiers USING (modifier_id)
+JOIN pizza_toppings USING (pizza_id)
+JOIN toppings USING (topping_id)
+WHERE modifier_id = 2
+GROUP BY topping_name
 ORDER BY COUNT(*) DESC
 LIMIT 1;
