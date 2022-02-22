@@ -896,3 +896,20 @@ WHERE modifier_id = 2
 GROUP BY topping_name
 ORDER BY COUNT(*) DESC
 LIMIT 1;
+
+# 3d
+# How many pizzas are only cheese (i.e. have no toppings)?
+# 2266
+SELECT
+	COUNT(pizza_id)
+FROM pizzas
+WHERE pizza_id NOT IN (
+	SELECT
+		pizza_id
+	FROM pizza_toppings
+) AND pizza_id NOT IN (
+	SELECT
+		pizza_id
+	FROM pizza_modifiers
+	WHERE modifier_id = 3
+);
