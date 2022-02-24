@@ -913,3 +913,60 @@ WHERE pizza_id NOT IN (
 	FROM pizza_modifiers
 	WHERE modifier_id = 3
 );
+
+# 3e
+# How many orders consist of pizza(s) that are only cheese?
+# 446
+SELECT
+	COUNT(cheese_pizzas.order_id)
+FROM (
+	SELECT
+		order_id,
+		COUNT(pizza_id) AS count_cheese_pizzas
+	FROM pizzas
+	GROUP BY order_id
+) AS cheese_pizzas
+JOIN (
+	SELECT
+		order_id,
+		COUNT(pizza_id) AS count_pizzas
+	FROM pizzas
+	WHERE pizza_id NOT IN (
+		SELECT
+			pizza_id
+		FROM pizza_toppings
+	) AND pizza_id NOT IN (
+		SELECT
+			pizza_id
+		FROM pizza_modifiers
+		WHERE modifier_id = 3
+	)
+	GROUP BY order_id
+) AS all_pizzas ON cheese_pizzas.order_id = all_pizzas.order_id
+	AND cheese_pizzas.count_cheese_pizzas = all_pizzas.count_pizzas;
+
+# cheese pizzas per order
+SELECT
+	order_id,
+	COUNT(pizza_id)
+FROM pizzas
+WHERE pizza_id NOT IN (
+	SELECT
+		pizza_id
+	FROM pizza_toppings
+) AND pizza_id NOT IN (
+	SELECT
+		pizza_id
+	FROM pizza_modifiers
+	WHERE modifier_id = 3
+)
+GROUP BY order_id;
+
+# pizzas per order
+SELECT
+	order_id,
+	COUNT(pizza_id)
+FROM pizzas
+GROUP BY order_id;
+
+# What is the average price of these orders? The most common pizza size?
