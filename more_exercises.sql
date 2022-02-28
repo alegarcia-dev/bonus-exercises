@@ -969,4 +969,42 @@ SELECT
 FROM pizzas
 GROUP BY order_id;
 
-# What is the average price of these orders? The most common pizza size?
+# What is the average price of these orders?
+
+
+
+# The most common pizza size?
+# small and x-large
+SELECT
+	sizes.size_name,
+	COUNT(sizes.size_name)
+FROM (
+	SELECT
+		order_id,
+		COUNT(pizza_id) AS count_cheese_pizzas
+	FROM pizzas
+	GROUP BY order_id
+) AS cheese_pizzas
+JOIN (
+	SELECT
+		order_id,
+		COUNT(pizza_id) AS count_pizzas
+	FROM pizzas
+	WHERE pizza_id NOT IN (
+		SELECT
+			pizza_id
+		FROM pizza_toppings
+	) AND pizza_id NOT IN (
+		SELECT
+			pizza_id
+		FROM pizza_modifiers
+		WHERE modifier_id = 3
+	)
+	GROUP BY order_id
+) AS all_pizzas ON cheese_pizzas.order_id = all_pizzas.order_id
+	AND cheese_pizzas.count_cheese_pizzas = all_pizzas.count_pizzas
+JOIN pizzas 
+	ON pizzas.order_id = cheese_pizzas.order_id
+JOIN sizes USING (size_id)
+GROUP BY sizes.size_name
+ORDER BY COUNT(*) DESC;
