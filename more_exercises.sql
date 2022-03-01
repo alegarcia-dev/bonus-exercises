@@ -915,35 +915,40 @@ WHERE pizza_id NOT IN (
 );
 
 # 3e
-# How many orders consist of pizza(s) that are only cheese?
-# 446
-SELECT
-	COUNT(cheese_pizzas.order_id)
-FROM (
+# Create temporary table of all cheese_pizzas where the entire order is cheese pizzas
+WITH cheese_pizzas AS (
 	SELECT
-		order_id,
-		COUNT(pizza_id) AS count_cheese_pizzas
-	FROM pizzas
-	GROUP BY order_id
-) AS cheese_pizzas
-JOIN (
-	SELECT
-		order_id,
-		COUNT(pizza_id) AS count_pizzas
-	FROM pizzas
-	WHERE pizza_id NOT IN (
+		pizzas.order_id,
+		pizzas.pizza_id,
+		pizzas.size_id
+	FROM (
 		SELECT
-			pizza_id
-		FROM pizza_toppings
-	) AND pizza_id NOT IN (
+			order_id,
+			COUNT(pizza_id) AS count_cheese_pizzas
+		FROM pizzas
+		GROUP BY order_id
+	) AS cheese_pizzas
+	JOIN (
 		SELECT
-			pizza_id
-		FROM pizza_modifiers
-		WHERE modifier_id = 3
-	)
-	GROUP BY order_id
-) AS all_pizzas ON cheese_pizzas.order_id = all_pizzas.order_id
-	AND cheese_pizzas.count_cheese_pizzas = all_pizzas.count_pizzas;
+			order_id,
+			COUNT(pizza_id) AS count_pizzas
+		FROM pizzas
+		WHERE pizza_id NOT IN (
+			SELECT
+				pizza_id
+			FROM pizza_toppings
+		) AND pizza_id NOT IN (
+			SELECT
+				pizza_id
+			FROM pizza_modifiers
+			WHERE modifier_id = 3
+		)
+		GROUP BY order_id
+	) AS all_pizzas ON cheese_pizzas.order_id = all_pizzas.order_id
+		AND cheese_pizzas.count_cheese_pizzas = all_pizzas.count_pizzas
+	JOIN pizzas
+		ON pizzas.order_id = cheese_pizzas.order_id
+)
 
 # cheese pizzas per order
 SELECT
@@ -969,42 +974,31 @@ SELECT
 FROM pizzas
 GROUP BY order_id;
 
+
+# How many orders consist of pizza(s) that are only cheese?
+# 446
+SELECT
+	COUNT(DISTINCT order_id)
+FROM cheese_pizzas;
+
 # What is the average price of these orders?
-
-
+# $12.20
+SELECT
+	ROUND(AVG(
+		sizes.size_price +
+		IF(modifier_price IS NULL, 0, modifier_price)
+	), 2) AS average_price
+FROM cheese_pizzas
+JOIN sizes USING (size_id)
+LEFT JOIN pizza_modifiers USING (pizza_id)
+LEFT JOIN modifiers USING (modifier_id);
 
 # The most common pizza size?
 # small and x-large
 SELECT
 	sizes.size_name,
 	COUNT(sizes.size_name)
-FROM (
-	SELECT
-		order_id,
-		COUNT(pizza_id) AS count_cheese_pizzas
-	FROM pizzas
-	GROUP BY order_id
-) AS cheese_pizzas
-JOIN (
-	SELECT
-		order_id,
-		COUNT(pizza_id) AS count_pizzas
-	FROM pizzas
-	WHERE pizza_id NOT IN (
-		SELECT
-			pizza_id
-		FROM pizza_toppings
-	) AND pizza_id NOT IN (
-		SELECT
-			pizza_id
-		FROM pizza_modifiers
-		WHERE modifier_id = 3
-	)
-	GROUP BY order_id
-) AS all_pizzas ON cheese_pizzas.order_id = all_pizzas.order_id
-	AND cheese_pizzas.count_cheese_pizzas = all_pizzas.count_pizzas
-JOIN pizzas 
-	ON pizzas.order_id = cheese_pizzas.order_id
+FROM cheese_pizzas
 JOIN sizes USING (size_id)
 GROUP BY sizes.size_name
 ORDER BY COUNT(*) DESC;
