@@ -9,6 +9,9 @@ numbers = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 17, 19, 23, 256, -8, -4, -2, 5, -
 
 vowels = list('aeiou')
 
+fruit_series = pd.Series(fruits)
+number_series = pd.Series(numbers)
+
 # Exercise 1 - Make a variable named uppercased_fruits and create a list of all of the list of strings in fruits and uppercases every string. Output should be ['MANGO', 'KIWI', etc...]
 
 # - Plain Python
@@ -38,7 +41,7 @@ capitalized_fruits = [fruit.capitalize() for fruit in fruits]
 print(capitalized_fruits)
 
 # - Pandas
-capitalized_fruits = pd.Series(fruits).str.capitalize()
+capitalized_fruits = fruit_series.str.capitalize()
 print(capitalized_fruits)
 
 # Exercise 3 - Use a list comprehension to make a variable named fruits_with_more_than_two_vowels. Hint: You'll need a way to check if something is a vowel.
@@ -65,8 +68,7 @@ fruits_with_more_than_two_vowels = [fruit for fruit in fruits if count_vowels(fr
 print(fruits_with_more_than_two_vowels)
 
 # - Pandas
-fruits_series = pd.Series(fruits)
-fruits_with_more_than_two_vowels = fruits_series[fruits_series.str.count('[aeiou]') > 2]
+fruits_with_more_than_two_vowels = fruit_series[fruit_series.str.count('[aeiou]') > 2]
 print(fruits_with_more_than_two_vowels)
 
 # Exercise 4 - make a variable named fruits_with_only_two_vowels. The result should be ['mango', 'kiwi', 'strawberry']
@@ -93,8 +95,7 @@ fruits_with_only_two_vowels = [fruit for fruit in fruits if count_vowels(fruit) 
 print(fruits_with_only_two_vowels)
 
 # - Pandas
-fruits_series = pd.Series(fruits)
-fruits_with_only_two_vowels = fruits_series[fruits_series.str.count('[aeiou]') == 2]
+fruits_with_only_two_vowels = fruit_series[fruit_series.str.count('[aeiou]') == 2]
 print(fruits_with_only_two_vowels)
 
 # Exercise 5 - make a list that contains each fruit with more than 5 characters
@@ -111,25 +112,143 @@ fruits_with_more_than_5_chars = [fruit for fruit in fruits if len(fruit) > 5]
 print(fruits_with_more_than_5_chars)
 
 # - Pandas
-fruit_series = pd.Series(fruits)
 fruits_with_more_than_5_chars = fruit_series[fruit_series.str.len() > 5]
 print(fruits_with_more_than_5_chars)
 
 # Exercise 6 - make a list that contains each fruit with exactly 5 characters
 
+# - Plain Python
+fruits_with_5_chars = []
+for fruit in fruits:
+    if len(fruit) == 5:
+        fruits_with_5_chars.append(fruit)
+print(fruits_with_5_chars)
+
+# - List Comprehension
+fruits_with_5_chars = [fruit for fruit in fruits if len(fruit) == 5]
+print(fruits_with_5_chars)
+
+# - Pandas
+fruits_with_5_chars = fruit_series[fruit_series.str.len() == 5]
+print(fruits_with_5_chars)
+
 # Exercise 7 - Make a list that contains fruits that have less than 5 characters
+
+# - Plain Python
+fruits_with_less_than_5_chars = []
+for fruit in fruits:
+    if len(fruit) < 5:
+        fruits_with_less_than_5_chars.append(fruit)
+print(fruits_with_less_than_5_chars)
+
+# - List Comprehension
+fruits_with_less_than_5_chars = [fruit for fruit in fruits if len(fruit) < 5]
+print(fruits_with_less_than_5_chars)
+
+# - Pandas
+fruits_with_less_than_5_chars = fruit_series[fruit_series.str.len() < 5]
+print(fruits_with_less_than_5_chars)
 
 # Exercise 8 - Make a list containing the number of characters in each fruit. Output would be [5, 4, 10, etc... ]
 
+# - Plain Python
+num_chars_per_fruit = []
+for fruit in fruits:
+    num_chars_per_fruit.append(len(fruit))
+print(num_chars_per_fruit)
+
+# - List Comprehension
+num_chars_per_fruit = [len(fruit) for fruit in fruits]
+print(num_chars_per_fruit)
+
+# - Pandas
+num_chars_per_fruit = fruit_series.str.len()
+print(num_chars_per_fruit)
+
 # Exercise 9 - Make a variable named fruits_with_letter_a that contains a list of only the fruits that contain the letter "a"
+
+# - Plain Python
+fruits_with_letter_a = []
+for fruit in fruits:
+    if 'a' in fruit:
+        fruits_with_letter_a.append(fruit)
+print(fruits_with_letter_a)
+
+# - List Comprehension
+fruits_with_letter_a = [fruit for fruit in fruits if 'a' in fruit]
+print(fruits_with_letter_a)
+
+# - Pandas
+fruits_with_letter_a = fruit_series[fruit_series.str.contains('a')]
+print(fruits_with_letter_a)
 
 # Exercise 10 - Make a variable named even_numbers that holds only the even numbers 
 
+# - Plain Python
+even_numbers = []
+for number in numbers:
+    if number % 2 == 0:
+        even_numbers.append(number)
+print(even_numbers)
+
+# - List Comprehension
+even_numbers = [number for number in numbers if number % 2 == 0]
+print(even_numbers)
+
+# - Pandas
+even_numbers = number_series[number_series % 2 == 0]
+print(even_numbers)
+
 # Exercise 11 - Make a variable named odd_numbers that holds only the odd numbers
+
+# - Plain Python
+odd_numbers = []
+for number in numbers:
+    if number % 2 != 0:
+        odd_numbers.append(number)
+print(odd_numbers)
+
+# - List Comprehension
+odd_numbers = [number for number in numbers if number % 2 != 0]
+print(odd_numbers)
+
+# - Pandas
+odd_numbers = number_series[number_series % 2 != 0]
+print(odd_numbers)
 
 # Exercise 12 - Make a variable named positive_numbers that holds only the positive numbers
 
+# - Plain Python
+positive_numbers = []
+for number in numbers:
+    if number > 0:
+        positive_numbers.append(number)
+print(positive_numbers)
+
+# - List Comprehension
+positive_numbers = [number for number in numbers if number > 0]
+print(positive_numbers)
+
+# - Pandas
+positive_numbers = number_series[number_series > 0]
+print(positive_numbers)
+
 # Exercise 13 - Make a variable named negative_numbers that holds only the negative numbers
+
+# - Plain Python
+negative_numbers = []
+for number in numbers:
+    if number < 0:
+        negative_numbers.append(number)
+print(negative_numbers)
+
+# - List Comprehension
+negative_numbers = [number for number in numbers if number < 0]
+print(negative_numbers)
+
+# - Pandas
+negative_numbers = number_series[number_series < 0]
+print(negative_numbers)
 
 # Exercise 14 - use a list comprehension w/ a conditional in order to produce a list of numbers with 2 or more numerals
 
