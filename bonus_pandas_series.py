@@ -252,10 +252,93 @@ print(negative_numbers)
 
 # Exercise 14 - use a list comprehension w/ a conditional in order to produce a list of numbers with 2 or more numerals
 
+# - Plain Python
+numbers_with_at_least_2_digits = []
+for number in numbers:
+    if len(str(number).lstrip('-')) >= 2:
+        numbers_with_at_least_2_digits.append(number)
+print(numbers_with_at_least_2_digits)
+
+# - List Comprehension
+numbers_with_at_least_2_digits = [number for number in numbers if len(str(number).lstrip('-')) >= 2]
+print(numbers_with_at_least_2_digits)
+
+# - Pandas
+numbers_with_at_least_2_digits = number_series[number_series.astype(str).str.lstrip('-').str.len() >= 2]
+print(numbers_with_at_least_2_digits)
+
 # Exercise 15 - Make a variable named numbers_squared that contains the numbers list with each element squared. Output is [4, 9, 16, etc...]
+
+# - Plain Python
+numbers_squared = []
+for number in numbers:
+    numbers_squared.append(number * number)
+print(numbers_squared)
+
+# - List Comprehension
+numbers_squared = [number * number for number in numbers]
+print(numbers_squared)
+
+# - Pandas
+numbers_squared = number_series ** 2
+print(numbers_squared)
 
 # Exercise 16 - Make a variable named odd_negative_numbers that contains only the numbers that are both odd and negative.
 
+# - Plain Python
+odd_negative_numbers = []
+for number in numbers:
+    if number % 2 != 0 and number < 0:
+        odd_negative_numbers.append(number)
+print(odd_negative_numbers)
+
+# - List Comprehension
+odd_negative_numbers = [number for number in numbers if number % 2 != 0 and number < 0]
+print(odd_negative_numbers)
+
+# - Pandas
+odd_negative_numbers = number_series[(number_series % 2 != 0) & (number_series < 0)]
+print(odd_negative_numbers)
+
 # Exercise 17 - Make a variable named numbers_plus_5. In it, return a list containing each number plus five. 
 
-# BONUS Make a variable named "primes" that is a list containing the prime numbers in the numbers list. *Hint* you may want to make or find a helper function that determines if a given number is prime or not.
+# - Plain Python
+numbers_plus_5 = []
+for number in numbers:
+    numbers_plus_5.append(number + 5)
+print(numbers_plus_5)
+
+# - List Comprehension
+numbers_plus_5 = [number + 5 for number in numbers]
+print(numbers_plus_5)
+
+# - Pandas
+numbers_plus_5 = number_series + 5
+print(numbers_plus_5)
+
+# BONUS Make a variable named "primes" that is a list containing the prime numbers in the numbers list. 
+# *Hint* you may want to make or find a helper function that determines if a given number is prime or not.
+
+def is_prime(num: int) -> bool:
+    if num > 1:
+        for i in range(2, num // 2 + 1):
+            if num % i == 0:
+                return False
+        return True
+    else:
+        return False
+
+# - Plain Python
+primes = []
+for number in numbers:
+    if is_prime(number):
+        primes.append(number)
+print(primes)
+
+# - List Comprehension
+primes = [number for number in numbers if is_prime(number)]
+print(primes)
+
+# - Pandas
+primes = number_series[number_series.apply(is_prime)]
+print(primes)
