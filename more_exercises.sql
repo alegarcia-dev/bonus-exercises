@@ -1002,3 +1002,17 @@ FROM cheese_pizzas
 JOIN sizes USING (size_id)
 GROUP BY sizes.size_name
 ORDER BY COUNT(*) DESC;
+
+# 3f
+# How may large pizzas have olives on them?
+# 1326
+SELECT
+	COUNT(pizzas.pizza_id) as large_pizzas_with_olives
+FROM pizzas
+JOIN sizes
+	ON pizzas.size_id = sizes.size_id
+	AND sizes.size_name = 'large'
+JOIN pizza_toppings USING (pizza_id)
+JOIN toppings
+	ON pizza_toppings.topping_id = toppings.topping_id
+	AND toppings.topping_name = 'olives';
